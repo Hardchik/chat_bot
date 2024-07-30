@@ -1,0 +1,1 @@
+mongodb+srv://adityaaverma:<password>@cluster0.pkkhotk.mongodb.net/

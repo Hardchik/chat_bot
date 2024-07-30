@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #070001;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-container {
+            width: 60%;
+            margin: 50px auto;
+            background: #69b1f0;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #000000;
+            padding: 10px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #000000;
+            margin-right: 10px;
+        }
+        .chat-button {
+            padding: 10px 20px;
+            border: none;
+            background: #0839c0;
+            color: #410101;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" class="chat-input" placeholder="Type your message here">
+        <button id="send-button" class="chat-button">Send</button>
+    </div>
+    <script>
+        document.getElementById('send-button').addEventListener('click', function() {
+            const userInput = document.getElementById('user-input').value;
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+                chatBox.innerHTML += `<p><strong>Bot:</strong> ${data.response}</p>`;
+                document.getElementById('user-input').value = '';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
