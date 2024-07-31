@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import json
-
+from bson import json_util
 uri = "mongodb+srv://adityaaverma:bdsNesf1P9JjYXnX@cluster0.pkkhotk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Create a new client and connect to the server
@@ -31,17 +31,19 @@ chat = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
     # print(city,budget)
     # response = requests.get(f'https://api-next.devbeta.in/v1/mix/langchain-properties?city={city}&budget={budget}')
 @tool
-def get_data_from_api(year:int) -> dict:
+def get_data_from_api(year:str) -> dict:
     "fetch all the movie data"
     db = client['sample_mflix']
     collection = db['movies']
-    query={'year':{year}}
+    x=int(year)
+    query={'year':x}
 
     results = collection.find(query)
+    dict={'movies':[],'sucess':'True'}
+    for movie in results:
+        dict['movies'].append(json_util.dumps(movie))
     
-    for d in results:
-        print(d)
-    return json.loads(results)
+    return dict or {}
 
 # List of tools to be used by the agent
 tools = [get_data_from_api]
